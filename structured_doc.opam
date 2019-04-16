@@ -1,0 +1,23 @@
+opam-version: "1.2"
+name: "structured_doc"
+maintainer: "atthecodeface@gmail.com"
+author: "atthecodeface@gmail.com"
+homepage: ""
+bug-reports: ""
+license: ""
+dev-repo: ""
+
+version: "dev"
+
+build: [
+  ["jbuilder" "subst" "-n" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
+
+depends: [
+  "jbuilder" {build}
+  "xmlm"
+  "batteries"
+]
+available: [ ocaml-version >= "4.04.0" ]

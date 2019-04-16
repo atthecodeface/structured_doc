@@ -1,0 +1,28 @@
+; fonts
+; refs
+; defs
+; reduce coords by marker length
+; text anchor vertically
+; expand
+; fill
+#box id=group font_size=3.0
+##text id=fetch  grid=0,0,1,1  class=pipe_stage eval="mag_b=.bbox 5 split;" "Fetch" 
+##box  id=f2d    grid=0,1,1,1  class=pipe_gap
+##text id=decode grid=0,2,1,1  class=pipe_stage eval="mag_b=.bbox 5 split;" "Decode" 
+##box  id=f2d    grid=0,3,1,1  class=pipe_gap
+##text id=rfr    grid=0,4,1,1  class=pipe_stage eval="mag_b=.bbox 5 split;" "Read registers"
+##box  id=f2d    grid=0,5,1,1  class=pipe_gap
+##text id=alu    grid=0,6,1,1  class=pipe_stage eval="mag_b=.bbox 5 split;" "ALU"
+##box  id=f2d    grid=0,7,1,1  class=pipe_gap
+##text id=mreq   grid=0,8,1,1  class=pipe_stage eval="mag_b=.bbox 5 split;" "Memory request"
+##box  id=f2d    grid=0,9,1,1  class=pipe_gap
+##text id=mresp  grid=0,10,1,1 class=pipe_stage eval="mag_b=.bbox 5 split;" "Memory response"
+##box  id=f2d    grid=0,11,1,1 class=pipe_gap
+##text id=rfw    grid=0,12,1,1 class=pipe_stage eval="mag_b=.bbox 5 split;" "Write register"
+##path id=f2darr class=pipe_arrow eval="coords=^.fetch.mag_b 2 sub 2 sub ^.decode.mag_b 0 sub 2 sub;"
+##path id=d2rarr class=pipe_arrow eval="coords=^.decode.mag_b 2 sub 2 sub ^.rfr.mag_b 0 sub 2 sub;"
+##path id=r2aarr class=pipe_arrow eval="coords=^.rfr.mag_b 2 sub 2 sub ^.alu.mag_b 0 sub 2 sub;"
+##path id=a2marr class=pipe_arrow eval="coords=^.alu.mag_b 2 sub 2 sub ^.mreq.mag_b 0 sub 2 sub;"
+##path id=m2marr class=pipe_arrow eval="coords=^.mreq.mag_b 2 sub 2 sub ^.mresp.mag_b 0 sub 2 sub;"
+##path id=m2rarr class=pipe_arrow eval="coords=^.mresp.mag_b 2 sub 2 sub ^.rfw.mag_b 0 sub 2 sub;"
+;##path id=m2rarr class=pipe_arrow stroke_width=5 coords="5 10 30 30"

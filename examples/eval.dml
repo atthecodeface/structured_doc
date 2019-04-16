@@ -1,0 +1,9 @@
+; bbox is an array of 4 vectors
+; split of bbox is an array of 4 arrays of vectors
+; <array> <int> sub takes the <int>th element of array
+#text id=t00 grid=0,0,1,1 border=1 border_color=green font=f0 size=11 color=black reval='mag_b=.bbox 5 split; xy=.mag_b 0 sub 1 sub; x=.xy 0 sub; y=.xy 1 sub;' 'Text for t00'
+#text id=t10 grid=1,0,1,1 font=f0 size=11 color=black ''
+#text id=t01 grid=0,1,1,1 font=f0 size=11 color=black """a lot of text with """ """ "" double quotes """
+#text id=t11 grid=1,1,1,1 font=f0 size=11 color=black 'Text for t11'
+#path id=p1 grid=0,2,2,1 color=red width=1 eval='coords=.bbox close;'
+#path id=p2 color=blue width=0.5 eval='end0=^.p1.bbox 5 split 2 sub 1 sub; end1=^.t00.bbox 5 split 0 sub 3 sub; coords=.end0 .end1;'

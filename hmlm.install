@@ -1,0 +1,25 @@
+lib: [
+  "_build/install/default/lib/hmlm/META" {"META"}
+  "_build/install/default/lib/hmlm/opam" {"opam"}
+  "_build/install/default/lib/hmlm/hmlm.cmi" {"hmlm.cmi"}
+  "_build/install/default/lib/hmlm/hmlm.cmx" {"hmlm.cmx"}
+  "_build/install/default/lib/hmlm/hmlm.cmt" {"hmlm.cmt"}
+  "_build/install/default/lib/hmlm/hmlm.ml" {"hmlm.ml"}
+  "_build/install/default/lib/hmlm/hmlm__.cmi" {"hmlm__.cmi"}
+  "_build/install/default/lib/hmlm/hmlm__.cmx" {"hmlm__.cmx"}
+  "_build/install/default/lib/hmlm/hmlm__.cmt" {"hmlm__.cmt"}
+  "_build/install/default/lib/hmlm/hmlm__.ml-gen" {"hmlm__.ml-gen"}
+  "_build/install/default/lib/hmlm/hmlm__Reader.cmi" {"hmlm__Reader.cmi"}
+  "_build/install/default/lib/hmlm/hmlm__Reader.cmx" {"hmlm__Reader.cmx"}
+  "_build/install/default/lib/hmlm/hmlm__Reader.cmt" {"hmlm__Reader.cmt"}
+  "_build/install/default/lib/hmlm/reader.ml" {"reader.ml"}
+  "_build/install/default/lib/hmlm/hmlm__Uchar.cmi" {"hmlm__Uchar.cmi"}
+  "_build/install/default/lib/hmlm/hmlm__Uchar.cmx" {"hmlm__Uchar.cmx"}
+  "_build/install/default/lib/hmlm/hmlm__Uchar.cmt" {"hmlm__Uchar.cmt"}
+  "_build/install/default/lib/hmlm/uchar.ml" {"uchar.ml"}
+  "_build/install/default/lib/hmlm/hmlm.cma" {"hmlm.cma"}
+  "_build/install/default/lib/hmlm/hmlm.cmxa" {"hmlm.cmxa"}
+  "_build/install/default/lib/hmlm/hmlm.a" {"hmlm.a"}
+  "_build/install/default/lib/hmlm/hmlm.cmxs" {"hmlm.cmxs"}
+  "_build/install/default/lib/hmlm/hmlm.dune" {"hmlm.dune"}
+]

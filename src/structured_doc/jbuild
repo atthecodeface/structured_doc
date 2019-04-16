@@ -1,0 +1,12 @@
+(jbuild_version 1)
+
+(library (
+  (name structured_doc)
+  (public_name structured_doc)
+  (libraries (
+    hmlm
+    xmlm
+    batteries
+  ))
+))
+

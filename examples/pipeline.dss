@@ -1,0 +1,14 @@
+#style id=pipe_stage border_color="0.1 0.1 0.1" border=0.5 fill_color=red margin=0.5 padding=3 border_round=5
+#style id=pipe_gap   border=0 padding=0 margin=0 height=4
+#style id=pipe_arrow stroke_width=0.5 markers="stub arr"
+##style id=pipe_gap_other   border=1
+#rule class=pipe_stage
+##apply style=pipe_stage
+#rule class=pipe_gap
+##apply style=pipe_gap
+#rule class=pipe_arrow style=pipe_arrow
+
+;##apply style=pipe_gap
+;##rule subtree=1 class=mumble
+;###apply style=pipe_gap
+;###apply style=pipe_gap

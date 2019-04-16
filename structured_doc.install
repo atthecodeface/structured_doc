@@ -1,0 +1,13 @@
+lib: [
+  "_build/install/default/lib/structured_doc/META" {"META"}
+  "_build/install/default/lib/structured_doc/opam" {"opam"}
+  "_build/install/default/lib/structured_doc/structured_doc.cmi" {"structured_doc.cmi"}
+  "_build/install/default/lib/structured_doc/structured_doc.cmx" {"structured_doc.cmx"}
+  "_build/install/default/lib/structured_doc/structured_doc.cmt" {"structured_doc.cmt"}
+  "_build/install/default/lib/structured_doc/structured_doc.ml" {"structured_doc.ml"}
+  "_build/install/default/lib/structured_doc/structured_doc.cma" {"structured_doc.cma"}
+  "_build/install/default/lib/structured_doc/structured_doc.cmxa" {"structured_doc.cmxa"}
+  "_build/install/default/lib/structured_doc/structured_doc.a" {"structured_doc.a"}
+  "_build/install/default/lib/structured_doc/structured_doc.cmxs" {"structured_doc.cmxs"}
+  "_build/install/default/lib/structured_doc/structured_doc.dune" {"structured_doc.dune"}
+]

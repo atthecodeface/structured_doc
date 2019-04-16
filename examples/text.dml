@@ -1,0 +1,2 @@
+;#font id=f0 face='Arial embedded' ascent=10. descent=3. avg_width=5.
+#text id=t0 grid=0,0,1,1 font=f0 size=11 color=black ;'Some text'
