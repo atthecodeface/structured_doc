@@ -14,11 +14,11 @@ type t_tagoc = [ | `TagOpen     of (bool * int * tag * pos)  (* bra, depth, (nam
 type input = {
     reader : Reader.t;
     concat_data : string option;
-    mutable tag_depth : int;
-    mutable pending_tag : t_tagoc option;
-    mutable pending_data : string list;
-    mutable pending_end  : bool;
-    mutable tag_stack : tag list;
+    mutable tag_depth : int; (* Depth of tag (indentation effectively) of currsent open tag *)
+    mutable pending_tag : t_tagoc option; (* Tag that is to happen next after any close *)
+    mutable pending_data : string list; (* List of data from the CDATA to be delivered before end of tag *)
+    mutable pending_end  : bool; (* if true an `El_End is pending after the pending_data is returned *)
+    mutable tag_stack : tag list; (* list of tags, most local in head, usually initialized with a single toplevel tag *)
   }
 
 let raise_error t e = raise (Error ((Reader.pos t.reader), e))
@@ -83,7 +83,7 @@ let str_pt t =
 (*f verbose *)
 let verbose t r =
   let (l,c) = Reader.pos t.reader in
-  Printf.printf ">>%3d,%3d:%40s:%2d:%2d:%40s:\n" l c r t.tag_depth (List.length t.tag_stack) (str_pt t)
+  Printf.printf ">>%3d,%3d:%40s:%2d:%2d:%5b:%40s:\n" l c r t.tag_depth (List.length t.tag_stack) t.pending_end (str_pt t)
 let verbose _ _ = ()
 
 (*f get_tag_depth
@@ -220,6 +220,47 @@ let get_string t =
     read_until t (fun ch -> (ch==quote_ch)) Uchar.is_newline
   )
     
+(*f deliver_pending_data_or_end : t -> Xmlm.signal
+ *)
+let deliver_pending_data_or_end t =
+  match t.pending_data with
+  | hd::tl -> (
+    match t.concat_data with
+    | None -> (t.pending_data<-tl; `Data hd)
+    | Some ch -> (
+      let r = String.concat ch t.pending_data in
+      t.pending_data <- []; 
+      `Data r
+    )
+  )
+  | [] -> (
+    verbose t "El_end";
+    t.pending_end <- false;
+    `El_end
+  )
+
+(*f pop_tag_stack ?depth -> t -> unit ; new depth specified if tag_depth may be 0 as end of a ###tag{ *)
+let pop_tag_stack ?depth t =
+  (match depth with 
+  | Some d -> ( (* close current bracketed tag first *)
+    t.pending_tag <- None;
+    t.tag_depth <- d (* closing the bracketed tag too, so decrement its depth *)
+  ) 
+  | None -> ()
+  );
+  t.pending_end <- true;
+  t.tag_stack <- List.tl t.tag_stack; (* t.tag_stack should match name *)
+  t.tag_depth <- t.tag_depth - 1
+
+(*f push_tag_stack t -> tag -> depth -> Xmlm.signal
+ *)
+let push_tag_stack t tag new_depth =
+  verbose t "El_start";
+  t.tag_depth <- new_depth;
+  t.tag_stack <- tag :: t.tag_stack;
+  t.pending_tag <- None;
+  `El_start tag
+
 (*f get_token
 skip whitespace
 if it is a tag then parse the tag and any attributes
@@ -230,51 +271,24 @@ Then next character must be EOF, tag_start, or quotation for cdata
 let rec get_token t =
   verbose t "get_token";
   if t.pending_end then (
-    match t.pending_data with
-    | [] -> (t.pending_end <- false; `El_end)
-    | hd::tl -> (
-      match t.concat_data with
-      | None -> (t.pending_data<-tl; `Data hd)
-      | Some ch -> (
-        let r = String.concat ch t.pending_data in
-        t.pending_data <- []; 
-        `Data r
-      )
-    )
+    deliver_pending_data_or_end t
   ) else (
     match t.pending_tag with
     | Some (`TagKet (d,name)) -> ( (* pop top of tag stack *)
-      if (t.tag_depth==0) then (
-        t.tag_stack <- List.tl t.tag_stack; (* t.tag_stack should match name *)
-        t.tag_depth <- d;
-        t.pending_end <- true;
+        verbose t (Printf.sprintf "get_token:tagket:%d" d);
+        pop_tag_stack ~depth:d t;
         get_token t
-      ) else (
-        t.tag_depth <- t.tag_depth - 1;
-        t.tag_stack <- List.tl t.tag_stack;
-        t.pending_end <- true;
-        get_token t
-      )
     )
     | Some (`TagOpen (bra, d, _, _)) when (d<=t.tag_depth) -> ( (* pop top of tag stack *)
-      verbose t "get_token2";
-      t.tag_depth <- t.tag_depth - 1;
-      t.tag_stack <- List.tl t.tag_stack;
-      t.pending_end <- true;
+      verbose t "get_token:tagopen2";
+      pop_tag_stack t;
       get_token t
     )
     | Some (`TagOpen (bra, d, tag, _)) when (d==t.tag_depth+1) -> ( (* pending tag is at tag_depth+1 enter pending tag *)
-      if bra then (
-        t.tag_depth <- 0;
-        t.tag_stack <- tag :: t.tag_stack;
-        t.pending_tag <- None;
-        `El_start tag
-      ) else (
-        t.tag_depth <- t.tag_depth + 1;
-        t.tag_stack <- tag :: t.tag_stack;
-        t.pending_tag <- None;
-        `El_start tag
-      )
+      if bra then
+        push_tag_stack t tag 0
+      else
+        push_tag_stack t tag (t.tag_depth + 1)
     )
     | Some (`TagOpen (_, _, tag, (l,c))) -> ( (* invalid tag depth *)
       Printf.printf "Start of tag for error (%d,%d)\n" l c;
@@ -316,11 +330,13 @@ let rec get_token t =
     )
   )
 
+(*f make_input >concat_data:string -> ?doc_tag:tag -> Xmlm.source -> t *)
 let make_input ?concat_data ?doc_tag:tag source =
     let reader = Reader.make source in
     let tag_stack = match tag with | Some x -> [x] | None -> [] in
     {reader; tag_stack; tag_depth=0; pending_tag=None; pending_data=[]; pending_end=false; concat_data}
 
+(*f input : t -> Xmlm.signal *)
 let input t =
     get_token t
 
