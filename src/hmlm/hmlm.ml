@@ -242,11 +242,11 @@ let deliver_pending_data_or_end t =
 (*f pop_tag_stack ?depth -> t -> unit ; new depth specified if tag_depth may be 0 as end of a ###tag{ *)
 let pop_tag_stack ?depth t =
   (match depth with 
-  | Some d -> ( (* close current bracketed tag first *)
+  | Some d when (t.tag_depth=0)-> ( (* close current bracketed tag first *)
     t.pending_tag <- None;
     t.tag_depth <- d (* closing the bracketed tag too, so decrement its depth *)
   ) 
-  | None -> ()
+  | _ -> ()
   );
   t.pending_end <- true;
   t.tag_stack <- List.tl t.tag_stack; (* t.tag_stack should match name *)
@@ -274,7 +274,7 @@ let rec get_token t =
     deliver_pending_data_or_end t
   ) else (
     match t.pending_tag with
-    | Some (`TagKet (d,name)) -> ( (* pop top of tag stack *)
+    | Some (`TagKet (d,name)) -> ( (* got a ket - if others still to pop, pop them pop top of tag stack *)
         verbose t (Printf.sprintf "get_token:tagket:%d" d);
         pop_tag_stack ~depth:d t;
         get_token t
